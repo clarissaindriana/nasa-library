@@ -295,9 +295,8 @@ input, textarea, select {
 }
 
 input:focus, textarea:focus, select:focus {
-    outline: none;
-    ring: 2px;
-    ring-color: var(--color-gray-900);
+    outline: 2px solid var(--color-gray-900);
+    outline-offset: 2px;
     border-color: var(--color-gray-900);
 }
 
@@ -1246,4 +1245,227 @@ button, a, .interactive {
     h2::after {
         width: 40px;
     }
+}
+
+/* === Interactive Button Animations === */
+@keyframes shimmer {
+    0% {
+        left: -100%;
+    }
+    100% {
+        left: 100%;
+    }
+}
+
+@keyframes bounce-gentle {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-8px);
+    }
+}
+
+@keyframes pulse-glow {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.8;
+        transform: scale(1.1);
+    }
+}
+
+@keyframes shimmer-gradient {
+    0% {
+        background-position: -1000px 0;
+    }
+    100% {
+        background-position: 1000px 0;
+    }
+}
+
+.group-hover\:animate-shimmer:hover {
+    animation: shimmer 1.5s infinite;
+}
+
+.group-hover\:animate-bounce {
+    transition: transform 0.3s ease;
+}
+
+.group:hover .group-hover\:animate-bounce {
+    animation: bounce-gentle 0.6s ease-in-out infinite;
+}
+
+.group-hover\:animate-pulse {
+    transition: opacity 0.2s, transform 0.2s;
+}
+
+.group:hover .group-hover\:animate-pulse {
+    animation: pulse-glow 1s ease-in-out infinite;
+}
+
+/* Enhanced button styling */
+button[class*="group"] {
+    position: relative;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+button[class*="group"]:active {
+    transform: scale(0.97);
+}
+.book-opened-card {
+    perspective: 1200px;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    border-radius: 1.5rem;
+    overflow: hidden;
+    box-shadow: 
+        -8px 8px 20px rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    transition: all 0.3s ease-out;
+    transform-style: preserve-3d;
+    background: linear-gradient(135deg, #ffffff 0%, #faf8f7 100%);
+}
+
+.book-opened-card:hover {
+    box-shadow: 
+        -12px 12px 30px rgba(0, 0, 0, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+/* Book pages with curved edge effect */
+.book-page {
+    flex: 1;
+    position: relative;
+    background: white;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
+}
+
+.book-page-left {
+    background: linear-gradient(to right, #fafafa 0%, #ffffff 100%);
+    border-right: 3px solid #e5e7eb;
+    box-shadow: inset -2px 0 8px rgba(0, 0, 0, 0.05);
+}
+
+.book-page-right {
+    background: linear-gradient(to left, #fafafa 0%, #ffffff 100%);
+    border-left: 3px solid #f0f0f0;
+    box-shadow: inset 2px 0 8px rgba(0, 0, 0, 0.02);
+}
+
+/* Curved page effect with pseudo-elements */
+.book-page-left::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: linear-gradient(90deg, rgba(0, 0, 0, 0.1) 0%, transparent 100%);
+    border-radius: 2px;
+}
+
+.book-page-right::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: linear-gradient(-90deg, rgba(0, 0, 0, 0.1) 0%, transparent 100%);
+    border-radius: 2px;
+}
+
+/* Page flip animation */
+.book-flip-card {
+    animation: bookFloatFlow 4s ease-in-out infinite;
+}
+
+@keyframes bookFloatFlow {
+    0%, 100% {
+        transform: translateY(0) rotateX(0deg);
+    }
+    25% {
+        transform: translateY(-8px) rotateX(1deg);
+    }
+    50% {
+        transform: translateY(0) rotateX(-1deg);
+    }
+    75% {
+        transform: translateY(-4px) rotateX(0.5deg);
+    }
+}
+
+/* On hover - enhanced animation */
+.book-flip-card:hover {
+    animation: bookPageFlip 0.8s ease-out forwards;
+}
+
+@keyframes bookPageFlip {
+    0% {
+        transform: translateY(0) rotateX(0deg) scale(1);
+    }
+    50% {
+        transform: translateY(-12px) rotateX(10deg) scale(1.02);
+    }
+    100% {
+        transform: translateY(-8px) rotateX(5deg) scale(1.01);
+    }
+}
+
+/* Mobile page flip animation - automatic */
+@media (max-width: 768px) {
+    .book-flip-card {
+        animation: mobilePageFlip 3s ease-in-out infinite !important;
+    }
+    
+    @keyframes mobilePageFlip {
+        0% {
+            transform: translateY(0) rotateY(0deg);
+        }
+        50% {
+            transform: translateY(-6px) rotateY(8deg);
+        }
+        100% {
+            transform: translateY(0) rotateY(0deg);
+        }
+    }
+}
+
+/* Elegant text styling inside book pages */
+.book-page h3 {
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.book-page p {
+    letter-spacing: 0.3px;
+}
+
+/* Interactive feedback */
+.book-flip-card .book-page {
+    cursor: pointer;
+}
+
+.book-flip-card .book-page:hover {
+    background-color: rgba(255, 255, 255, 0.9);
+}
+
+/* Flipped state styling */
+.book-flip-card.flipped .book-page-left {
+    visibility: hidden;
+    opacity: 0;
+}
+
+.book-flip-card.flipped .book-page-right {
+    visibility: visible;
+    opacity: 1;
 }
