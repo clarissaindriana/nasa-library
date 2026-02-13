@@ -1,0 +1,116 @@
+<!-- Navigation Bar -->
+{% load static %}
+<nav class="sticky top-0 z-50 border-b border-gray-100 backdrop-blur-md bg-white/80">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-16 md:h-20">
+            
+            <!-- Logo Section -->
+            <div class="flex items-center space-x-3">
+                <a href="{% url 'main:mainpage' %}" class="flex items-center justify-center w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-gray-900 to-gray-700 rounded-lg">
+                    <span class="text-white font-display text-lg md:text-xl font-bold">📚</span>
+                </a>
+                <div class="hidden sm:block">
+                    <h1 class="text-base md:text-lg font-display font-bold text-gray-900">SMAN 61</h1>
+                    <p class="text-xs md:text-sm text-gray-600 font-sans">Jakarta Library</p>
+                </div>
+            </div>
+            
+            <!-- Desktop Navigation Links -->
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="{% url 'main:mainpage' %}" class="text-gray-700 hover:text-gray-900 font-sans text-sm font-medium transition-colors duration-200">Home</a>
+                <a href="#" class="text-gray-700 hover:text-gray-900 font-sans text-sm font-medium transition-colors duration-200">Explore Books</a>
+                {% if user.is_authenticated %}
+                <a href="#" class="text-gray-700 hover:text-gray-900 font-sans text-sm font-medium transition-colors duration-200">My Borrowing</a>
+                <a href="#" class="text-gray-700 hover:text-gray-900 font-sans text-sm font-medium transition-colors duration-200">Leaderboard</a>
+                {% endif %}
+            </div>
+            
+            <!-- User Info & Actions -->
+            <div class="flex items-center space-x-3 md:space-x-6">
+                
+                {% if user.is_authenticated %}
+                <!-- Authenticated User Section -->
+                <div class="flex items-center space-x-3 md:space-x-4">
+                    <!-- User Profile Dropdown -->
+                    <div class="relative group">
+                        <button class="flex items-center space-x-2 hover:opacity-75 transition-opacity">
+                            <div class="w-8 h-8 md:w-9 md:h-9 bg-gradient-to-br from-gray-400 to-gray-600 rounded-full flex items-center justify-center text-white font-sans font-bold text-sm">
+                                {{ user.first_name|make_list|first|upper }}
+                            </div>
+                            <span class="hidden md:block text-sm font-sans text-gray-700">{{ user.first_name }}</span>
+                            <svg class="hidden md:block w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                        
+                        <!-- Dropdown Menu -->
+                        <div class="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 border border-gray-100">
+                            <div class="px-4 py-3 border-b border-gray-100">
+                                <p class="text-sm font-sans text-gray-900 font-medium">{{ user.first_name }} {{ user.last_name }}</p>
+                                <p class="text-xs font-sans text-gray-500">
+                                    {% if user.profile.role == 'student' %}Siswa{% elif user.profile.role == 'teacher' %}Guru{% elif user.profile.role == 'librarian' %}Pustakawan{% else %}{{ user.profile.role }}{% endif %}
+                                </p>
+                            </div>
+                            <a href="#" class="block px-4 py-3 text-sm font-sans text-gray-700 hover:bg-gray-50 border-b border-gray-100">My Profile</a>
+                            <a href="#" class="block px-4 py-3 text-sm font-sans text-gray-700 hover:bg-gray-50 border-b border-gray-100">Attendance</a>
+                            <a href="{% url 'authentication:change_password' %}" class="block px-4 py-3 text-sm font-sans text-gray-700 hover:bg-gray-50 border-b border-gray-100">Change Password</a>
+                            <form method="post" action="{% url 'authentication:logout' %}" class="m-0">
+                                {% csrf_token %}
+                                <button type="submit" class="w-full text-left px-4 py-3 text-sm font-sans text-red-600 hover:bg-red-50">
+                                    Logout
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <!-- Guest User Section - Login Button -->
+                <a href="{% url 'authentication:login' %}" class="hidden md:inline-flex items-center px-4 py-2 bg-gray-900 text-white font-sans text-sm font-medium rounded-lg hover:bg-gray-800 transition-colors duration-200">
+                    Login
+                </a>
+                {% endif %}
+                
+                <!-- Mobile Menu Button -->
+                <button class="md:hidden text-gray-700 hover:text-gray-900 transition-colors" id="mobile-menu-btn">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Mobile Navigation Menu -->
+        <div id="mobile-menu" class="hidden md:hidden border-t border-gray-100 pb-4">
+            <a href="{% url 'main:mainpage' %}" class="block px-4 py-3 text-gray-700 hover:text-gray-900 hover:bg-gray-50 font-sans text-sm font-medium">Home</a>
+            <a href="#" class="block px-4 py-3 text-gray-700 hover:text-gray-900 hover:bg-gray-50 font-sans text-sm font-medium">Explore Books</a>
+            {% if user.is_authenticated %}
+            <a href="#" class="block px-4 py-3 text-gray-700 hover:text-gray-900 hover:bg-gray-50 font-sans text-sm font-medium">My Borrowing</a>
+            <a href="#" class="block px-4 py-3 text-gray-700 hover:text-gray-900 hover:bg-gray-50 font-sans text-sm font-medium">Leaderboard</a>
+            <div class="border-t border-gray-100 mt-2 pt-2">
+                <p class="px-4 py-2 text-xs font-sans text-gray-500">Signed in as {{ user.first_name }}</p>
+                <a href="{% url 'authentication:change_password' %}" class="block px-4 py-3 text-gray-700 hover:text-gray-900 hover:bg-gray-50 font-sans text-sm font-medium">Change Password</a>
+                <form method="post" action="{% url 'authentication:logout' %}" class="m-0">
+                    {% csrf_token %}
+                    <button type="submit" class="w-full text-left px-4 py-3 text-red-600 hover:bg-red-50 font-sans text-sm font-medium">
+                        Logout
+                    </button>
+                </form>
+            </div>
+            {% else %}
+            <a href="{% url 'authentication:login' %}" class="block px-4 py-3 text-gray-700 hover:text-gray-900 hover:bg-gray-50 font-sans text-sm font-medium">Login</a>
+            {% endif %}
+        </div>
+    </div>
+</nav>
+
+<!-- Mobile Menu Toggle Script -->
+<script>
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    
+    if (mobileMenuBtn && mobileMenu) {
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+    }
+</script>

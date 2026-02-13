@@ -1,59 +1,42 @@
-from django.apps import AppConfig
+from django.core.management.base import BaseCommand, CommandError
+from django.contrib.auth.models import User
+from authentication.models import UserProfile
+from openpyxl import load_workbook
 import os
-import logging
-
-logger = logging.getLogger(__name__)
 
 
-class AuthenticationConfig(AppConfig):
-    default_auto_field = 'django.db.models.BigAutoField'
-    name = 'authentication'
+class Command(BaseCommand):
+    help = 'Import students from Excel file (Daftar-Siswa-Cleaned.xlsx)'
 
-    def ready(self):
-        """Auto-import students when Django starts"""
-        self.import_students_on_startup()
+    def add_arguments(self, parser):
+        parser.add_argument(
+            '--filepath',
+            type=str,
+            help='Path to Excel file',
+            default='static/files/Daftar-Siswa-Cleaned.xlsx'
+        )
+        parser.add_argument(
+            '--skip-existing',
+            action='store_true',
+            help='Skip existing users',
+            default=True
+        )
 
-    def import_students_on_startup(self):
-        """Import students from Excel file if they don't exist"""
-        from django.contrib.auth.models import User
-        from authentication.models import UserProfile
-        from openpyxl import load_workbook
-        
-        filepath = 'static/files/Daftar-Siswa-Cleaned.xlsx'
+    def handle(self, *args, **options):
+        filepath = options['filepath']
+        skip_existing = options['skip_existing']
         
         # Check if file exists
         if not os.path.exists(filepath):
-            logger.warning(f'Student data file not found: {filepath}')
-            return
-        
-        # Check if students have already been imported (use a marker)
-        # We'll check if any student profiles exist
-        if UserProfile.objects.filter(role='student').exists():
-            # Check if any users have the float format issue (NIS with .0)
-            problematic_users = User.objects.filter(username__endswith='.0')
-            if problematic_users.exists():
-                logger.warning(f'Found {problematic_users.count()} users with float-format NIS. Fixing...')
-                for user in problematic_users:
-                    # Convert 2514440.0 -> 2514440
-                    old_username = user.username
-                    new_username = old_username.replace('.0', '')
-                    if not User.objects.filter(username=new_username).exists():
-                        user.username = new_username
-                        user.set_password(new_username)  # Also fix the password!
-                        user.save()
-                        # Also update the profile
-                        profile = user.profile
-                        profile.nis = new_username
-                        profile.save()
-                        logger.info(f'Fixed user: {old_username} -> {new_username}')
-                logger.info('Float-format NIS fix complete')
-            return
+            raise CommandError(f'File not found: {filepath}')
         
         try:
             workbook = load_workbook(filepath)
             worksheet = workbook.active
             
             imported_count = 0
+            skipped_count = 0
+            error_count = 0
             
             # Start from row 2 (skip header)
             for row_idx, row in enumerate(worksheet.iter_rows(min_row=2, values_only=True), start=2):
@@ -62,6 +45,8 @@ class AuthenticationConfig(AppConfig):
                     
                     # Validate data
                     if not nis or not nama:
+                        self.stdout.write(self.style.WARNING(f'Row {row_idx}: Missing NIS or Nama, skipping'))
+                        skipped_count += 1
                         continue
                     
                     # Convert to string and strip whitespace
@@ -73,14 +58,20 @@ class AuthenticationConfig(AppConfig):
                         # Remove .0 suffix if present
                         if nis.endswith('.0'):
                             nis = nis[:-2]
-                    
                     nama = str(nama).strip()
                     jenis_kelamin = str(jenis_kelamin).strip() if jenis_kelamin else ''
                     kelas = str(kelas).strip() if kelas else ''
                     
                     # Check if user already exists
                     if User.objects.filter(username=nis).exists():
-                        continue
+                        if skip_existing:
+                            self.stdout.write(self.style.WARNING(f'Row {row_idx}: User {nis} already exists, skipping'))
+                            skipped_count += 1
+                            continue
+                        else:
+                            self.stdout.write(self.style.ERROR(f'Row {row_idx}: User {nis} already exists'))
+                            error_count += 1
+                            continue
                     
                     # Parse nama (split into first and last name)
                     parts = nama.split(' ', 1)
@@ -105,14 +96,22 @@ class AuthenticationConfig(AppConfig):
                         kelas=kelas
                     )
                     
+                    self.stdout.write(self.style.SUCCESS(f'Row {row_idx}: Successfully imported {nis} - {nama}'))
                     imported_count += 1
                     
+                except TypeError as e:
+                    self.stdout.write(self.style.ERROR(f'Row {row_idx}: Type error - {str(e)}'))
+                    error_count += 1
                 except Exception as e:
-                    logger.error(f'Row {row_idx}: Error importing student - {str(e)}')
-                    continue
+                    self.stdout.write(self.style.ERROR(f'Row {row_idx}: Error - {str(e)}'))
+                    error_count += 1
             
-            if imported_count > 0:
-                logger.info(f'Successfully auto-imported {imported_count} students')
+            # Print summary
+            self.stdout.write(self.style.SUCCESS('\n========== SUMMARY =========='))
+            self.stdout.write(f'Imported: {imported_count}')
+            self.stdout.write(self.style.WARNING(f'Skipped: {skipped_count}'))
+            self.stdout.write(self.style.ERROR(f'Errors: {error_count}'))
+            self.stdout.write('=============================')
             
         except Exception as e:
-            logger.error(f'Error reading Excel file: {str(e)}')
+            raise CommandError(f'Error reading Excel file: {str(e)}')
