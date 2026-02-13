@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}Change Password - MAN 61 Jakarta Library{% endblock %}
+{% block title %}Change Username - MAN 61 Jakarta Library{% endblock %}
 
 {% block content %}
 <div class="min-h-screen bg-gradient-to-br from-white via-gray-50 to-white flex items-center justify-center px-4 py-12">
@@ -8,10 +8,10 @@
         <!-- Header Section -->
         <div class="text-center mb-12 fade-in">
             <h1 class="font-display text-4xl md:text-5xl font-bold text-gray-900 mb-3">
-                Change Password
+                Change Username
             </h1>
             <p class="font-sans text-gray-600 text-lg">
-                Update your password securely
+                Update your login username
             </p>
         </div>
 
@@ -24,47 +24,38 @@
             {% endfor %}
         {% endif %}
 
-        <!-- Change Password Form -->
+        <!-- Change Username Form -->
         <form method="post" class="bg-white rounded-2xl border border-gray-200 p-8 md:p-10 shadow-lg hover:shadow-xl transition-shadow fade-in" style="animation-delay: 0.1s;">
             {% csrf_token %}
             
-            <!-- Current Password Field -->
+            <!-- Current Username Display -->
+            <div class="mb-6 p-4 bg-gray-100 rounded-lg border border-gray-200">
+                <p class="font-sans text-sm text-gray-600 mb-1">Current Username</p>
+                <p class="font-sans font-semibold text-gray-900 text-lg">{{ user.username }}</p>
+            </div>
+
+            <!-- New Username Field -->
             <div class="mb-6">
-                <label for="id_old_password" class="block font-sans font-semibold text-gray-900 mb-3 text-sm">
-                    {{ form.old_password.label }}
+                <label for="id_new_username" class="block font-sans font-semibold text-gray-900 mb-3 text-sm">
+                    {{ form.new_username.label }}
                 </label>
-                {{ form.old_password }}
-                {% if form.old_password.errors %}
+                {{ form.new_username }}
+                {% if form.new_username.errors %}
                     <p class="text-red-600 font-sans text-sm mt-2">
-                        {{ form.old_password.errors.0 }}
+                        {{ form.new_username.errors.0 }}
                     </p>
                 {% endif %}
             </div>
 
-            <!-- New Password Field -->
-            <div class="mb-6">
-                <label for="id_new_password1" class="block font-sans font-semibold text-gray-900 mb-3 text-sm">
-                    {{ form.new_password1.label }}
-                </label>
-                {{ form.new_password1 }}
-                {% if form.new_password1.errors %}
-                    <div class="text-red-600 font-sans text-sm mt-2">
-                        {% for error in form.new_password1.errors %}
-                            <p>{{ error }}</p>
-                        {% endfor %}
-                    </div>
-                {% endif %}
-            </div>
-
-            <!-- Confirm New Password Field -->
+            <!-- Password Field -->
             <div class="mb-8">
-                <label for="id_new_password2" class="block font-sans font-semibold text-gray-900 mb-3 text-sm">
-                    {{ form.new_password2.label }}
+                <label for="id_password" class="block font-sans font-semibold text-gray-900 mb-3 text-sm">
+                    {{ form.password.label }}
                 </label>
-                {{ form.new_password2 }}
-                {% if form.new_password2.errors %}
+                {{ form.password }}
+                {% if form.password.errors %}
                     <p class="text-red-600 font-sans text-sm mt-2">
-                        {{ form.new_password2.errors.0 }}
+                        {{ form.password.errors.0 }}
                     </p>
                 {% endif %}
             </div>
@@ -72,7 +63,7 @@
             <!-- Buttons -->
             <div class="flex gap-4">
                 <button type="submit" class="flex-1 py-3 px-6 bg-gray-900 text-white font-sans font-semibold rounded-lg hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 transition-all transform hover:scale-105 active:scale-95">
-                    Change Password
+                    Change Username
                 </button>
                 <a href="{% url 'main:mainpage' %}" class="flex-1 py-3 px-6 bg-gray-200 text-gray-900 font-sans font-semibold rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400 transition-all text-center">
                     Cancel
@@ -83,13 +74,14 @@
         <!-- Help Section -->
         <div class="mt-10 text-center fade-in" style="animation-delay: 0.2s;">
             <p class="font-sans text-gray-600 text-sm">
-                Password must be at least 8 characters
+                Username must be unique and cannot contain spaces
             </p>
         </div>
     </div>
 </div>
 
 <style>
+    input[type="text"],
     input[type="password"] {
         width: 100%;
         padding: 12px 16px;
@@ -101,12 +93,14 @@
         background-color: #ffffff;
     }
 
+    input[type="text"]:focus,
     input[type="password"]:focus {
         outline: none;
         border-color: #1f2937;
         box-shadow: 0 0 0 3px rgba(31, 41, 55, 0.1);
     }
 
+    input[type="text"]::placeholder,
     input[type="password"]::placeholder {
         color: #9ca3af;
     }
