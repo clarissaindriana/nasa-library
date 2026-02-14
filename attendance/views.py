@@ -278,6 +278,76 @@ def auto_checkout_view(request, record_id):
     return JsonResponse({'status': 'error', 'message': 'Already checked out'})
 
 
+@login_required
+def attendance_history_view(request):
+    """Student's attendance history page"""
+    # Get user profile
+    user_profile = get_object_or_404(UserProfile, user=request.user)
+    
+    # Check if user is a student
+    if not user_profile.is_student():
+        messages.error(request, "Only students can view their attendance history.")
+        return redirect('main:mainpage')
+    
+    # Get all attendance records for the student
+    all_records = Attendance.objects.filter(
+        user=request.user,
+        status='checked_out'  # Only show completed visits
+    ).prefetch_related('activities').order_by('-check_in_time')
+    
+    # Filter by month and year if provided
+    month = request.GET.get('month')
+    year = request.GET.get('year')
+    
+    if month and year:
+        filtered_records = all_records.filter(
+            check_in_time__month=int(month),
+            check_in_time__year=int(year)
+        )
+    else:
+        # Default to current month
+        today = timezone.now()
+        filtered_records = all_records.filter(
+            check_in_time__month=today.month,
+            check_in_time__year=today.year
+        )
+    
+    # Calculate statistics
+    total_visits = all_records.count()
+    total_duration = all_records.aggregate(total=Avg('duration_minutes'))['total'] or 0
+    
+    month_visits = filtered_records.count()
+    month_duration = filtered_records.aggregate(total=Avg('duration_minutes'))['total'] or 0
+    
+    # Get top activities
+    activity_counts = {}
+    for record in all_records:
+        for activity in record.activities.all():
+            activity_counts[activity.name] = activity_counts.get(activity.name, 0) + 1
+    
+    top_activities = sorted(
+        activity_counts.items(),
+        key=lambda x: x[1],
+        reverse=True
+    )[:5]
+    
+    context = {
+        'user_profile': user_profile,
+        'records': filtered_records,
+        'total_visits': total_visits,
+        'total_duration': int(total_duration),
+        'month_visits': month_visits,
+        'month_duration': int(month_duration),
+        'top_activities': top_activities,
+        'selected_month': int(month) if month else timezone.now().month,
+        'selected_year': int(year) if year else timezone.now().year,
+        'current_month': timezone.now().month,
+        'current_year': timezone.now().year,
+    }
+    
+    return render(request, 'history.html', context)
+
+
 def get_reading_stats(user):
     """
     Placeholder for reading statistics

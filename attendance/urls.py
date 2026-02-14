@@ -5,6 +5,7 @@ from .views import (
     dashboard_view,
     monthly_report_view,
     auto_checkout_view,
+    attendance_history_view,
 )
 
 app_name = 'attendance'
@@ -15,4 +16,5 @@ urlpatterns = [
     path('dashboard/', dashboard_view, name='dashboard'),
     path('report/<int:year>/<int:month>/', monthly_report_view, name='monthly_report'),
     path('auto-checkout/<int:record_id>/', auto_checkout_view, name='auto_checkout'),
+    path('history/', attendance_history_view, name='history'),
 ]
