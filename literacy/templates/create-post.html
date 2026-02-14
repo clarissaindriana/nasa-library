@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block title %}Create Literacy Post - NASA Library{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient-to-br from-white via-green-50 to-white">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        
+        <!-- Header -->
+        <div class="mb-12 text-center">
+            <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full mb-4 shadow-lg">
+                <span class="text-3xl">✍️</span>
+            </div>
+            <h1 class="font-display text-4xl md:text-5xl font-bold text-gray-900 mb-3">Share Your Literacy Story</h1>
+            <p class="font-sans text-lg text-gray-600">Inspire other students with your reading insights and book recommendations</p>
+        </div>
+
+        <!-- Form -->
+        <div class="bg-white border-2 border-gray-200 rounded-2xl p-6 md:p-8 shadow-sm">
+            <form method="POST" class="space-y-6">
+                {% csrf_token %}
+                
+                <!-- Title Field -->
+                <div>
+                    <label class="block font-display text-lg font-semibold text-gray-900 mb-3">
+                        {{ form.title.label }}
+                        <span class="text-red-500">*</span>
+                    </label>
+                    {% if form.title.errors %}
+                        <div class="text-red-600 text-sm mb-2">{{ form.title.errors }}</div>
+                    {% endif %}
+                    {{ form.title }}
+                    <p class="font-sans text-xs text-gray-500 mt-2">Give your post an interesting title</p>
+                </div>
+
+                <!-- Content Field -->
+                <div>
+                    <label class="block font-display text-lg font-semibold text-gray-900 mb-3">
+                        {{ form.content.label }}
+                        <span class="text-red-500">*</span>
+                    </label>
+                    {% if form.content.errors %}
+                        <div class="text-red-600 text-sm mb-2">{{ form.content.errors }}</div>
+                    {% endif %}
+                    {{ form.content }}
+                    <p class="font-sans text-xs text-gray-500 mt-2">Share your thoughts, recommendations, and literacy experiences</p>
+                </div>
+
+                <!-- Related Book Review (Optional) -->
+                <div>
+                    <label class="block font-display text-lg font-semibold text-gray-900 mb-3">
+                        {{ form.book_review.label }}
+                    </label>
+                    {% if form.book_review.errors %}
+                        <div class="text-red-600 text-sm mb-2">{{ form.book_review.errors }}</div>
+                    {% endif %}
+                    {{ form.book_review }}
+                    <p class="font-sans text-xs text-gray-500 mt-2">Link this post to one of your verified reviews (optional)</p>
+                </div>
+
+                <!-- Submit Buttons -->
+                <div class="flex gap-3 pt-4">
+                    <button type="submit" class="flex-1 py-4 px-6 bg-gradient-to-r from-green-600 to-emerald-600 text-white font-sans font-semibold rounded-xl hover:from-green-700 hover:to-emerald-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+                        ✨ Publish Post
+                    </button>
+                    <a href="{% url 'literacy:forum' %}" class="py-4 px-6 border-2 border-gray-300 text-gray-700 font-sans font-semibold rounded-xl hover:bg-gray-50 transition-colors">
+                        Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Tips -->
+        <div class="mt-12 bg-gradient-to-br from-green-50 to-blue-50 border-2 border-green-200 rounded-xl p-6">
+            <h3 class="font-display text-lg font-bold text-green-900 flex items-center gap-2 mb-4">
+                <span class="text-2xl">💡</span> Writing Tips
+            </h3>
+            <ul class="font-sans text-sm text-green-900 space-y-2">
+                <li>✓ Start with an engaging title that captures attention</li>
+                <li>✓ Share your authentic reactions and feelings about books</li>
+                <li>✓ Ask questions to spark discussions with other students</li>
+                <li>✓ Include book recommendations with reasons why</li>
+                <li>✓ Avoid major spoilers, or mark them clearly</li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}
