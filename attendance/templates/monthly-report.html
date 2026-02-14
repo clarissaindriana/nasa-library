@@ -1,0 +1,240 @@
+{% extends 'base.html' %}
+
+{% block title %}Monthly Report - SMAN 61 Jakarta{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient-to-br from-white via-gray-50 to-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        
+        <!-- Header -->
+        <div class="mb-8 flex items-center justify-between">
+            <div>
+                <h1 class="font-display text-4xl font-bold text-gray-900">📊 Monthly Report</h1>
+                <p class="font-sans text-gray-600 mt-2">{{ month_name }} {{ year }}</p>
+            </div>
+            <button onclick="window.print()" class="px-6 py-3 bg-blue-600 text-white font-sans font-semibold rounded-lg hover:bg-blue-700 transition-colors">
+                🖨️ Print Report
+            </button>
+        </div>
+
+        <!-- Key Statistics -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 print:gap-4">
+            
+            <div class="bg-gradient-to-br from-blue-50 to-cyan-50 border-2 border-blue-300 rounded-2xl p-6 print:p-4">
+                <p class="font-sans text-sm text-blue-700 uppercase tracking-wide mb-2">Total Unique Visitors</p>
+                <p class="font-display text-5xl font-bold text-blue-900">{{ total_unique_visitors }}</p>
+                <p class="font-sans text-xs text-blue-700 mt-2">students/staff</p>
+            </div>
+
+            <div class="bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-300 rounded-2xl p-6 print:p-4">
+                <p class="font-sans text-sm text-green-700 uppercase tracking-wide mb-2">Total Visits</p>
+                <p class="font-display text-5xl font-bold text-green-900">{{ total_visits }}</p>
+                <p class="font-sans text-xs text-green-700 mt-2">cumulative check-ins</p>
+            </div>
+
+            <div class="bg-gradient-to-br from-purple-50 to-pink-50 border-2 border-purple-300 rounded-2xl p-6 print:p-4">
+                <p class="font-sans text-sm text-purple-700 uppercase tracking-wide mb-2">Daily Average</p>
+                <p class="font-display text-5xl font-bold text-purple-900">{{ avg_daily_visitors }}</p>
+                <p class="font-sans text-xs text-purple-700 mt-2">visitors per day</p>
+            </div>
+        </div>
+
+        <!-- Daily Breakdown Table -->
+        <div class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden mb-8 print:shadow-none print:border-gray-400">
+            <div class="bg-gradient-to-r from-gray-50 to-white border-b border-gray-200 p-6 print:p-4">
+                <h2 class="font-display text-2xl font-bold text-gray-900">📅 Daily Breakdown</h2>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full print:text-sm">
+                    <thead>
+                            <tr class="border-b border-gray-200 bg-gray-50 print:bg-gray-100">
+                                <th class="px-6 py-3 text-left print:px-4 print:py-2">
+                                    <p class="font-sans font-semibold text-gray-700">Date</p>
+                                </th>
+                                <th class="px-6 py-3 text-center print:px-4 print:py-2">
+                                    <p class="font-sans font-semibold text-gray-700">Unique Visitors</p>
+                                </th>
+                                <th class="px-6 py-3 text-center print:px-4 print:py-2">
+                                    <p class="font-sans font-semibold text-gray-700">Total Visits</p>
+                                </th>
+                            </tr>
+                        </thead>
+                    <tbody>
+                        {% for day in daily_breakdown %}
+                            <tr class="border-b border-gray-100 hover:bg-gray-50 print:hover:bg-transparent print:border-gray-300">
+                                <td class="px-6 py-4 print:px-4 print:py-2">
+                                    <p class="font-sans font-semibold text-gray-900">{{ day.date|date:"l, j F Y" }}</p>
+                                </td>
+                                <td class="px-6 py-4 text-center print:px-4 print:py-2">
+                                    <span class="inline-flex items-center justify-center w-8 h-8 bg-blue-100 text-blue-800 rounded-full font-sans font-bold">
+                                        {{ day.visitors }}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 text-center print:px-4 print:py-2">
+                                    <span class="inline-flex items-center justify-center w-8 h-8 bg-green-100 text-green-800 rounded-full font-sans font-bold">
+                                        {{ day.visits }}
+                                    </span>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Top Readers -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            
+            <!-- Top 10 Students -->
+            <div class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden print:shadow-none print:border-gray-400">
+                <div class="bg-gradient-to-r from-amber-50 to-orange-50 border-b border-gray-200 p-6 print:p-4">
+                    <h2 class="font-display text-xl font-bold text-gray-900 flex items-center gap-2">
+                        <span class="text-2xl">🏆</span> Top 10 Students
+                    </h2>
+                    <p class="font-sans text-sm text-gray-600 mt-1">By number of visits</p>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full print:text-sm">
+                        <thead>
+                            <tr class="border-b border-gray-200 bg-gray-50 print:bg-gray-100">
+                                <th class="px-6 py-3 text-left print:px-4 print:py-2 w-16">
+                                    <p class="font-sans font-semibold text-gray-700">#</p>
+                                </th>
+                                <th class="px-6 py-3 text-left print:px-4 print:py-2">
+                                    <p class="font-sans font-semibold text-gray-700">Name</p>
+                                </th>
+                                <th class="px-6 py-3 text-right print:px-4 print:py-2 w-20">
+                                    <p class="font-sans font-semibold text-gray-700">Visits</p>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for student in top_students %}
+                                <tr class="border-b border-gray-100 hover:bg-gray-50 print:hover:bg-transparent print:border-gray-300">
+                                    <td class="px-6 py-4 print:px-4 print:py-2">
+                                        <div class="flex items-center justify-center">
+                                            {% if forloop.counter == 1 %}
+                                                <span class="text-xl">🥇</span>
+                                            {% elif forloop.counter == 2 %}
+                                                <span class="text-xl">🥈</span>
+                                            {% elif forloop.counter == 3 %}
+                                                <span class="text-xl">🥉</span>
+                                            {% else %}
+                                                <p class="font-sans font-semibold text-gray-600">{{ forloop.counter }}</p>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 print:px-4 print:py-2">
+                                        <p class="font-sans text-gray-900 font-semibold">{{ student.user__first_name }} {{ student.user__last_name }}</p>
+                                    </td>
+                                    <td class="px-6 py-4 text-right print:px-4 print:py-2">
+                                        <span class="inline-flex items-center justify-center w-8 h-8 bg-amber-100 text-amber-800 rounded-full font-sans font-bold">
+                                            {{ student.visit_count }}
+                                        </span>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Summary Statistics -->
+            <div class="space-y-6">
+                <!-- Attendance Summary -->
+                <div class="bg-white border border-gray-200 rounded-2xl shadow-sm p-6 print:shadow-none print:border-gray-400 print:p-4">
+                    <h3 class="font-display text-lg font-bold text-gray-900 mb-4">📈 Summary</h3>
+                    <div class="space-y-4 print:space-y-2">
+                        <div class="flex justify-between items-center">
+                            <p class="font-sans text-gray-700">Operating Days</p>
+                            <p class="font-sans font-bold text-gray-900">{{ daily_breakdown|length }}</p>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <p class="font-sans text-gray-700">Total Unique Visitors</p>
+                            <p class="font-sans font-bold text-gray-900">{{ total_unique_visitors }}</p>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <p class="font-sans text-gray-700">Total Visits</p>
+                            <p class="font-sans font-bold text-gray-900">{{ total_visits }}</p>
+                        </div>
+                        <div class="flex justify-between items-center border-t border-gray-200 pt-4">
+                            <p class="font-sans text-gray-700">Avg Visitors/Day</p>
+                            <p class="font-sans font-bold text-lg text-purple-600">{{ avg_daily_visitors }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Report Generated Info -->
+                <div class="bg-blue-50 border border-blue-200 rounded-2xl p-6 print:p-4">
+                    <p class="font-sans text-sm text-blue-900">
+                        <span class="font-semibold">Report Information:</span><br>
+                        This report was automatically generated from the library attendance system. It provides accurate data for accreditation and monitoring purposes.
+                    </p>
+                    <p class="font-sans text-xs text-blue-700 mt-3">
+                        Generated on: <span class="font-mono">{{ today|date:"j F Y, H:i" }}</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Export Options -->
+        <div class="flex gap-4 justify-center print:hidden">
+            <button onclick="window.print()" class="px-6 py-3 bg-blue-600 text-white font-sans font-semibold rounded-lg hover:bg-blue-700 transition-colors">
+                🖨️ Print Report
+            </button>
+            <a href="{% url 'attendance:dashboard' %}" class="px-6 py-3 bg-gray-600 text-white font-sans font-semibold rounded-lg hover:bg-gray-700 transition-colors">
+                ← Back to Dashboard
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+    @media print {
+        body {
+            background: white;
+        }
+        .print\:hidden {
+            display: none !important;
+        }
+        .print\:p-4 {
+            padding: 1rem !important;
+        }
+        .print\:px-4 {
+            padding-left: 1rem !important;
+            padding-right: 1rem !important;
+        }
+        .print\:py-2 {
+            padding-top: 0.5rem !important;
+            padding-bottom: 0.5rem !important;
+        }
+        .print\:text-sm {
+            font-size: 0.875rem !important;
+        }
+        .print\:bg-gray-100 {
+            background-color: #f3f4f6 !important;
+        }
+        .print\:bg-transparent {
+            background-color: transparent !important;
+        }
+        .print\:border-gray-300 {
+            border-color: #d1d5db !important;
+        }
+        .print\:border-gray-400 {
+            border-color: #9ca3af !important;
+        }
+        .print\:shadow-none {
+            box-shadow: none !important;
+        }
+        .print\:gap-4 {
+            gap: 1rem !important;
+        }
+        .print\:hover\:bg-transparent:hover {
+            background-color: transparent !important;
+        }
+    }
+</style>
+
+{% endblock %}

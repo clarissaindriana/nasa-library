@@ -37,10 +37,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_crontab',
     'authentication',
     'main',
     'user',
     'book',
+    'attendance',
 ]
 
 MIDDLEWARE = [
@@ -153,3 +155,9 @@ LOGGING = {
         },
     },
 }
+
+# Django-Crontab Settings - Auto Check-Out at 3:00 PM
+CRONJOBS = [
+    # Auto check-out students at 3:00 PM (15:00) every day
+    ('0 15 * * *', 'attendance.cron.auto_checkout_at_closing'),
+]
