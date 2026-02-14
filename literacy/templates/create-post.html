@@ -3,67 +3,61 @@
 {% block title %}Create Literacy Post - NASA Library{% endblock %}
 
 {% block content %}
-<div class="min-h-screen bg-gradient-to-br from-white via-green-50 to-white">
+<div class="min-h-screen bg-gradient-to-br from-white via-gray-50 to-white">
     <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         
-        <!-- Header -->
-        <div class="mb-12 text-center">
-            <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full mb-4 shadow-lg">
-                <span class="text-3xl">✍️</span>
-            </div>
-            <h1 class="font-display text-4xl md:text-5xl font-bold text-gray-900 mb-3">Share Your Literacy Story</h1>
-            <p class="font-sans text-lg text-gray-600">Inspire other students with your reading insights and book recommendations</p>
+        <!-- Page Header -->
+        <div class="mb-12">
+            <h1 class="font-display text-4xl md:text-5xl font-bold text-gray-900">✍️ New Post</h1>
+            <p class="font-sans text-gray-600 mt-2">Share your reading insights and connect with the community</p>
         </div>
 
         <!-- Form -->
-        <div class="bg-white border-2 border-gray-200 rounded-2xl p-6 md:p-8 shadow-sm">
-            <form method="POST" class="space-y-6">
+        <div class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
+            <div class="sticky top-0 bg-gradient-to-r from-gray-50 to-white border-b border-gray-200 p-6">
+                <h2 class="font-display text-2xl font-bold text-gray-900 flex items-center gap-2">
+                    <span class="text-2xl">📝</span> Post Content
+                </h2>
+            </div>
+
+            <form method="POST" class="p-6 md:p-8 space-y-6">
                 {% csrf_token %}
                 
                 <!-- Title Field -->
                 <div>
-                    <label class="block font-display text-lg font-semibold text-gray-900 mb-3">
-                        {{ form.title.label }}
-                        <span class="text-red-500">*</span>
-                    </label>
-                    {% if form.title.errors %}
-                        <div class="text-red-600 text-sm mb-2">{{ form.title.errors }}</div>
-                    {% endif %}
+                    <label class="block font-sans font-semibold text-gray-900 mb-2">{{ form.title.label }}</label>
                     {{ form.title }}
-                    <p class="font-sans text-xs text-gray-500 mt-2">Give your post an interesting title</p>
+                    {% if form.title.errors %}
+                        <div class="text-red-600 text-sm mt-2">{{ form.title.errors }}</div>
+                    {% endif %}
                 </div>
 
                 <!-- Content Field -->
                 <div>
-                    <label class="block font-display text-lg font-semibold text-gray-900 mb-3">
-                        {{ form.content.label }}
-                        <span class="text-red-500">*</span>
-                    </label>
-                    {% if form.content.errors %}
-                        <div class="text-red-600 text-sm mb-2">{{ form.content.errors }}</div>
-                    {% endif %}
+                    <label class="block font-sans font-semibold text-gray-900 mb-2">{{ form.content.label }}</label>
+                    <p class="font-sans text-xs text-gray-600 mb-2">Share your thoughts and reading experiences</p>
                     {{ form.content }}
-                    <p class="font-sans text-xs text-gray-500 mt-2">Share your thoughts, recommendations, and literacy experiences</p>
+                    {% if form.content.errors %}
+                        <div class="text-red-600 text-sm mt-2">{{ form.content.errors }}</div>
+                    {% endif %}
                 </div>
 
                 <!-- Related Book Review (Optional) -->
                 <div>
-                    <label class="block font-display text-lg font-semibold text-gray-900 mb-3">
-                        {{ form.book_review.label }}
-                    </label>
-                    {% if form.book_review.errors %}
-                        <div class="text-red-600 text-sm mb-2">{{ form.book_review.errors }}</div>
-                    {% endif %}
+                    <label class="block font-sans font-semibold text-gray-900 mb-2">{{ form.book_review.label }}</label>
+                    <p class="font-sans text-xs text-gray-600 mb-2">Link to one of your verified reviews (optional)</p>
                     {{ form.book_review }}
-                    <p class="font-sans text-xs text-gray-500 mt-2">Link this post to one of your verified reviews (optional)</p>
+                    {% if form.book_review.errors %}
+                        <div class="text-red-600 text-sm mt-2">{{ form.book_review.errors }}</div>
+                    {% endif %}
                 </div>
 
                 <!-- Submit Buttons -->
-                <div class="flex gap-3 pt-4">
-                    <button type="submit" class="flex-1 py-4 px-6 bg-gradient-to-r from-green-600 to-emerald-600 text-white font-sans font-semibold rounded-xl hover:from-green-700 hover:to-emerald-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
-                        ✨ Publish Post
+                <div class="flex gap-4 pt-4">
+                    <button type="submit" class="flex-1 py-3 px-6 bg-blue-100 text-blue-700 font-sans font-semibold rounded-lg hover:bg-blue-200 transition-colors">
+                        ✨ Publish
                     </button>
-                    <a href="{% url 'literacy:forum' %}" class="py-4 px-6 border-2 border-gray-300 text-gray-700 font-sans font-semibold rounded-xl hover:bg-gray-50 transition-colors">
+                    <a href="{% url 'literacy:forum' %}" class="flex-1 py-3 px-6 bg-gray-100 text-gray-700 font-sans font-semibold rounded-lg hover:bg-gray-200 transition-colors text-center">
                         Cancel
                     </a>
                 </div>
@@ -71,18 +65,46 @@
         </div>
 
         <!-- Tips -->
-        <div class="mt-12 bg-gradient-to-br from-green-50 to-blue-50 border-2 border-green-200 rounded-xl p-6">
-            <h3 class="font-display text-lg font-bold text-green-900 flex items-center gap-2 mb-4">
-                <span class="text-2xl">💡</span> Writing Tips
+        <div class="mt-8 bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
+            <h3 class="font-display text-lg font-bold text-gray-900 flex items-center gap-2 mb-4">
+                <span class="text-2xl">💡</span> Tips
             </h3>
-            <ul class="font-sans text-sm text-green-900 space-y-2">
-                <li>✓ Start with an engaging title that captures attention</li>
-                <li>✓ Share your authentic reactions and feelings about books</li>
-                <li>✓ Ask questions to spark discussions with other students</li>
-                <li>✓ Include book recommendations with reasons why</li>
-                <li>✓ Avoid major spoilers, or mark them clearly</li>
+            <ul class="font-sans text-sm text-gray-600 space-y-2">
+                <li>✓ Use an engaging title that captures attention</li>
+                <li>✓ Share your authentic reactions and feelings</li>
+                <li>✓ Ask questions to spark discussions</li>
+                <li>✓ Include book recommendations with reasons</li>
+                <li>✓ Avoid major spoilers or mark them clearly</li>
             </ul>
         </div>
     </div>
 </div>
+
+<style>
+    input[type="text"],
+    textarea,
+    select {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #d1d5db;
+        border-radius: 0.5rem;
+        font-family: inherit;
+        font-size: 0.95rem;
+        color: #111827;
+        transition: all 0.2s;
+    }
+
+    input[type="text"]:focus,
+    textarea:focus,
+    select:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    textarea {
+        resize: vertical;
+        min-height: 150px;
+    }
+</style>
 {% endblock %}

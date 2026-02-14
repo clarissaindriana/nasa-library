@@ -16,7 +16,11 @@ from authentication.models import UserProfile
 @login_required
 def submit_review_view(request):
     """Student submits a book review"""
-    user_profile = get_object_or_404(UserProfile, user=request.user)
+    try:
+        user_profile = UserProfile.objects.get(user=request.user)
+    except UserProfile.DoesNotExist:
+        # Create a default profile for user if doesn't exist
+        user_profile = UserProfile.objects.create(user=request.user, role='student')
     
     if not user_profile.is_student():
         messages.error(request, "Only students can submit book reviews.")
@@ -58,25 +62,32 @@ def submit_review_view(request):
 @login_required
 def my_reviews_view(request):
     """Student views their review history"""
-    user_profile = get_object_or_404(UserProfile, user=request.user)
+    try:
+        user_profile = UserProfile.objects.get(user=request.user)
+    except UserProfile.DoesNotExist:
+        # Create a default profile for user if doesn't exist
+        user_profile = UserProfile.objects.create(user=request.user, role='student')
     
     if not user_profile.is_student():
         return redirect('literacy:leaderboard')
     
-    # Get all reviews
-    reviews = BookReview.objects.filter(student=request.user)
+    # Get all reviews - use distinct to avoid duplicates
+    reviews = BookReview.objects.filter(student=request.user).distinct()
     
     # Filter by status if requested
     status_filter = request.GET.get('status')
     if status_filter in ['pending', 'verified', 'rejected']:
         reviews = reviews.filter(status=status_filter)
     
+    # Get all reviews count before filtering for stats
+    all_reviews_count = BookReview.objects.filter(student=request.user).count()
+    
     # Stats
     stats = {
-        'total_reviews': reviews.count(),
-        'pending_reviews': reviews.filter(status='pending').count(),
-        'verified_reviews': reviews.filter(status='verified').count(),
-        'rejected_reviews': reviews.filter(status='rejected').count(),
+        'total_reviews': all_reviews_count,
+        'pending_reviews': BookReview.objects.filter(student=request.user, status='pending').count(),
+        'verified_reviews': BookReview.objects.filter(student=request.user, status='verified').count(),
+        'rejected_reviews': BookReview.objects.filter(student=request.user, status='rejected').count(),
     }
     
     context = {

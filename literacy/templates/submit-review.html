@@ -3,172 +3,198 @@
 {% block title %}Submit Book Review - NASA Library Literacy Program{% endblock %}
 
 {% block content %}
-<div class="min-h-screen bg-gradient-to-br from-white via-blue-50 to-white">
+<div class="min-h-screen bg-gradient-to-br from-white via-gray-50 to-white">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         
-        <!-- Header Section -->
-        <div class="mb-12 text-center">
-            <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full mb-4 shadow-lg">
-                <span class="text-3xl">📚</span>
-            </div>
-            <h1 class="font-display text-4xl md:text-5xl font-bold text-gray-900 mb-3">Share Your Book Review</h1>
-            <p class="font-sans text-lg text-gray-600 max-w-2xl mx-auto">Tell us about the book you've read and get it verified by your teacher. Your review helps inspire other students to read!</p>
-        </div>
-
-        <!-- Gamification Stats Card -->
-        <div class="grid grid-cols-3 gap-4 mb-8">
-            <div class="bg-gradient-to-br from-blue-50 to-blue-100 border-2 border-blue-300 rounded-xl p-4 text-center">
-                <div class="text-3xl font-bold text-blue-600">{{ stats.reviews_count }}</div>
-                <div class="text-sm text-blue-700 font-medium mt-1">Total Reviews</div>
-            </div>
-            <div class="bg-gradient-to-br from-green-50 to-green-100 border-2 border-green-300 rounded-xl p-4 text-center">
-                <div class="text-3xl font-bold text-green-600">{{ stats.verified_count }}</div>
-                <div class="text-sm text-green-700 font-medium mt-1">Verified ✓</div>
-            </div>
-            <div class="bg-gradient-to-br from-orange-50 to-orange-100 border-2 border-orange-300 rounded-xl p-4 text-center">
-                <div class="text-3xl font-bold text-orange-600">🎯</div>
-                <div class="text-sm text-orange-700 font-medium mt-1">Keep Reading!</div>
-            </div>
-        </div>
-
-        <!-- Daily Check-in Prompt -->
-        <div class="bg-gradient-to-r from-indigo-50 via-blue-50 to-cyan-50 border-2 border-blue-200 rounded-2xl p-6 mb-8 shadow-sm">
-            <div class="flex items-start gap-4">
-                <div class="text-4xl">📖</div>
+        <!-- Page Header -->
+        <div class="mb-12">
+            <div class="flex items-center justify-between mb-4">
                 <div>
-                    <h2 class="font-display text-xl font-bold text-gray-900 mb-2">Have you read anything today?</h2>
-                    <p class="font-sans text-gray-700 text-sm">Thursday is our literacy day! Take a moment to review the book you've been reading and share what you learned. Every review matters! 🌟</p>
+                    <h1 class="font-display text-4xl md:text-5xl font-bold text-gray-900">✍️ Write Your Review</h1>
+                    <p class="font-sans text-gray-600 mt-2">Share your thoughts about the book you've read</p>
                 </div>
             </div>
         </div>
 
-        <!-- Main Form -->
-        <div class="bg-white border-2 border-gray-200 rounded-2xl p-6 md:p-8 shadow-sm">
-            <form method="POST" class="space-y-6">
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-3 gap-2 md:gap-6 mb-8">
+            <!-- Total Reviews Card -->
+            <div class="bg-gradient-to-br from-blue-50 to-cyan-50 border-2 border-blue-300 rounded-2xl p-3 md:p-6 shadow-sm hover:shadow-md transition-shadow">
+                <div class="flex items-start justify-between mb-4">
+                    <div>
+                        <p class="font-sans text-xs md:text-sm text-blue-700 uppercase tracking-wide mb-1 md:mb-2">Total Reviews</p>
+                        <p class="font-display text-2xl md:text-5xl font-bold text-blue-900">{{ stats.reviews_count }}</p>
+                    </div>
+                    <div class="w-8 h-8 md:w-12 md:h-12 bg-blue-200 rounded-full flex items-center justify-center text-lg md:text-2xl">
+                        📚
+                    </div>
+                </div>
+                <p class="font-sans text-xs text-blue-700">Reviews you've submitted</p>
+            </div>
+
+            <!-- Verified Reviews Card -->
+            <div class="bg-gradient-to-br from-emerald-50 to-teal-50 border-2 border-emerald-300 rounded-2xl p-3 md:p-6 shadow-sm hover:shadow-md transition-shadow">
+                <div class="flex items-start justify-between mb-4">
+                    <div>
+                        <p class="font-sans text-xs md:text-sm text-emerald-700 uppercase tracking-wide mb-1 md:mb-2">Verified</p>
+                        <p class="font-display text-2xl md:text-5xl font-bold text-emerald-900">{{ stats.verified_count }}</p>
+                    </div>
+                    <div class="w-8 h-8 md:w-12 md:h-12 bg-emerald-200 rounded-full flex items-center justify-center text-lg md:text-2xl">
+                        ✓
+                    </div>
+                </div>
+                <p class="font-sans text-xs text-emerald-700">Approved by teacher</p>
+            </div>
+
+            <!-- Reading Challenge Card -->
+            <div class="bg-gradient-to-br from-purple-50 to-pink-50 border-2 border-purple-300 rounded-2xl p-3 md:p-6 shadow-sm hover:shadow-md transition-shadow">
+                <div class="flex items-start justify-between mb-4">
+                    <div>
+                        <p class="font-sans text-sm text-purple-700 uppercase tracking-wide mb-2\">Challenge</p>
+                        <p class="font-display text-2xl md:text-5xl font-bold text-purple-900">🎯</p>
+                    </div>
+                    <div class="w-8 h-8 md:w-12 md:h-12 bg-purple-200 rounded-full flex items-center justify-center text-lg md:text-2xl">
+                        🌟
+                    </div>
+                </div>
+                <p class="font-sans text-xs text-purple-700">Keep reading more</p>
+            </div>
+        </div>
+
+        <!-- Daily Prompt Card -->
+        <div class="bg-white border border-gray-200 rounded-2xl p-6 md:p-8 shadow-sm mb-8">
+            <div class="flex items-start gap-4">
+                <div class="text-4xl flex-shrink-0">📖</div>
+                <div>
+                    <h2 class="font-display text-lg font-bold text-gray-900 mb-2">Have you read anything today?</h2>
+                    <p class="font-sans text-sm text-gray-600">Take a moment to share your thoughts. Your review helps inspire other students and contributes to our school's reading culture!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Form Section -->
+        <div class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
+            <div class="sticky top-0 bg-gradient-to-r from-gray-50 to-white border-b border-gray-200 p-6">
+                <h2 class="font-display text-2xl font-bold text-gray-900 flex items-center gap-2">
+                    <span class="text-2xl">📝</span> Review Details
+                </h2>
+                <p class="font-sans text-sm text-gray-600 mt-1">Fill in the information about the book you've read</p>
+            </div>
+
+            <form method="POST" class="p-6 md:p-8 space-y-6">
                 {% csrf_token %}
                 
                 <!-- Title Field -->
                 <div>
-                    <label class="block font-display text-lg font-semibold text-gray-900 mb-3">
-                        {{ form.title.label }}
-                        <span class="text-red-500">*</span>
-                    </label>
-                    {% if form.title.errors %}
-                        <div class="text-red-600 text-sm mb-2">{{ form.title.errors }}</div>
-                    {% endif %}
+                    <label class="block font-sans font-semibold text-gray-900 mb-2">{{ form.title.label }}</label>
                     {{ form.title }}
-                    <p class="font-sans text-xs text-gray-500 mt-2">e.g., "The Book Thief", "To Kill a Mockingbird"</p>
+                    {% if form.title.errors %}
+                        <div class="mt-2 text-sm text-red-600">{{ form.title.errors }}</div>
+                    {% endif %}
                 </div>
 
                 <!-- Author Field -->
                 <div>
-                    <label class="block font-display text-lg font-semibold text-gray-900 mb-3">
-                        {{ form.author.label }}
-                        <span class="text-red-500">*</span>
-                    </label>
-                    {% if form.author.errors %}
-                        <div class="text-red-600 text-sm mb-2">{{ form.author.errors }}</div>
-                    {% endif %}
+                    <label class="block font-sans font-semibold text-gray-900 mb-2">{{ form.author.label }}</label>
                     {{ form.author }}
-                    <p class="font-sans text-xs text-gray-500 mt-2">Who wrote this book?</p>
+                    {% if form.author.errors %}
+                        <div class="mt-2 text-sm text-red-600">{{ form.author.errors }}</div>
+                    {% endif %}
                 </div>
 
                 <!-- Two-column layout for publisher and year -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <!-- Publisher Field -->
                     <div>
-                        <label class="block font-display text-lg font-semibold text-gray-900 mb-3">
-                            {{ form.publisher.label }}
-                            <span class="text-red-500">*</span>
-                        </label>
-                        {% if form.publisher.errors %}
-                            <div class="text-red-600 text-sm mb-2">{{ form.publisher.errors }}</div>
-                        {% endif %}
+                        <label class="block font-sans font-semibold text-gray-900 mb-2">{{ form.publisher.label }}</label>
                         {{ form.publisher }}
+                        {% if form.publisher.errors %}
+                            <div class="mt-2 text-sm text-red-600">{{ form.publisher.errors }}</div>
+                        {% endif %}
                     </div>
 
                     <!-- Year Published Field -->
                     <div>
-                        <label class="block font-display text-lg font-semibold text-gray-900 mb-3">
-                            {{ form.year_published.label }}
-                            <span class="text-red-500">*</span>
-                        </label>
-                        {% if form.year_published.errors %}
-                            <div class="text-red-600 text-sm mb-2">{{ form.year_published.errors }}</div>
+                        <label class="block font-sans font-semibold text-gray-900 mb-2">{{ form.publication_year.label }}</label>
+                        {{ form.publication_year }}
+                        {% if form.publication_year.errors %}
+                            <div class="mt-2 text-sm text-red-600">{{ form.publication_year.errors }}</div>
                         {% endif %}
-                        {{ form.year_published }}
                     </div>
                 </div>
 
                 <!-- Summary/Review Field -->
                 <div>
-                    <label class="block font-display text-lg font-semibold text-gray-900 mb-3">
-                        {{ form.summary.label }}
-                        <span class="text-red-500">*</span>
-                    </label>
-                    {% if form.summary.errors %}
-                        <div class="text-red-600 text-sm mb-2">{{ form.summary.errors }}</div>
-                    {% endif %}
+                    <label class="block font-sans font-semibold text-gray-900 mb-2">{{ form.summary.label }}</label>
+                    <p class="font-sans text-xs text-gray-600 mb-2">Write a thoughtful review (min 50 characters)</p>
                     {{ form.summary }}
-                    <p class="font-sans text-xs text-gray-500 mt-2">🎯 Tips: Include key themes, characters, your favorite parts, and what you learned from the book</p>
+                    {% if form.summary.errors %}
+                        <div class="mt-2 text-sm text-red-600">{{ form.summary.errors }}</div>
+                    {% endif %}
                 </div>
 
                 <!-- Submit Buttons -->
-                <div class="flex gap-3 pt-4">
-                    <button type="submit" class="flex-1 py-4 px-6 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-sans font-semibold rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
-                        ✨ Submit Review
+                <div class="flex gap-4 pt-4">
+                    <button type="submit" class="flex-1 px-6 py-3 bg-blue-100 text-blue-700 font-sans font-semibold rounded-lg hover:bg-blue-200 transition-colors">
+                        📤 Submit Review
                     </button>
-                    <a href="{% url 'literacy:my_reviews' %}" class="py-4 px-6 border-2 border-gray-300 text-gray-700 font-sans font-semibold rounded-xl hover:bg-gray-50 transition-colors">
-                        View My Reviews
+                    <a href="{% url 'literacy:my_reviews' %}" class="flex-1 px-6 py-3 bg-gray-100 text-gray-700 font-sans font-semibold rounded-lg hover:bg-gray-200 transition-colors text-center">
+                        Back
                     </a>
                 </div>
             </form>
-
-            <!-- Info Message -->
-            <div class="mt-8 p-4 bg-blue-50 border border-blue-200 rounded-xl">
-                <p class="font-sans text-sm text-blue-900">
-                    <span class="font-semibold">⏳ What happens next?</span> Your review will be submitted for verification by your teacher. You'll see the status update in "My Reviews" once verified!
-                </p>
-            </div>
         </div>
 
-        <!-- Tips & Help -->
-        <div class="mt-12 grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="bg-gradient-to-br from-amber-50 to-orange-50 border-2 border-amber-300 rounded-xl p-6">
-                <h3 class="font-display text-lg font-bold text-amber-900 mb-4 flex items-center gap-2">
-                    <span class="text-2xl">💡</span> Writing Tips
-                </h3>
-                <ul class="font-sans text-sm text-amber-900 space-y-2">
-                    <li>✓ Be honest about your thoughts</li>
-                    <li>✓ Summarize key plot points</li>
-                    <li>✓ Share what you learned</li>
-                    <li>✓ Recommend it or not - and why</li>
-                </ul>
-            </div>
-            
-            <div class="bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-300 rounded-xl p-6">
-                <h3 class="font-display text-lg font-bold text-green-900 mb-4 flex items-center gap-2">
-                    <span class="text-2xl">🏆</span> Earn Points
-                </h3>
-                <ul class="font-sans text-sm text-green-900 space-y-2">
-                    <li>✓ 20 points per verified review</li>
-                    <li>✓ Climb the leaderboard</li>
-                    <li>✓ Become a Literacy Ambassador</li>
-                    <li>✓ Unlock achievements! 🎖️</li>
-                </ul>
+        <!-- Tips Section -->
+        <div class="mt-8 bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
+            <h3 class="font-display text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <span class="text-2xl">💡</span> Writing Tips
+            </h3>
+            <div class="space-y-3">
+                <div class="flex gap-3">
+                    <span class="text-lg flex-shrink-0">✨</span>
+                    <p class="font-sans text-sm text-gray-600">Be honest about your thoughts - what did you like or dislike?</p>
+                </div>
+                <div class="flex gap-3">
+                    <span class="text-lg flex-shrink-0">🎯</span>
+                    <p class="font-sans text-sm text-gray-600">Mention specific scenes or characters that stood out to you</p>
+                </div>
+                <div class="flex gap-3">
+                    <span class="text-lg flex-shrink-0">📌</span>
+                    <p class="font-sans text-sm text-gray-600">Suggest who would enjoy this book and why</p>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
 <style>
-    /* Custom input styling */
     input[type="text"],
     input[type="number"],
-    textarea {
+    textarea,
+    select {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #d1d5db;
+        border-radius: 0.5rem;
         font-family: inherit;
-        appearance: none;
-        -webkit-appearance: none;
+        font-size: 0.95rem;
+        color: #111827;
+        transition: all 0.2s;
+    }
+
+    input[type="text"]:focus,
+    input[type="number"]:focus,
+    textarea:focus,
+    select:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    textarea {
+        resize: vertical;
+        min-height: 120px;
     }
 </style>
 {% endblock %}
